@@ -2,6 +2,7 @@ package com.example.OTP.Entrance.Backend.Controllers;
 
 import com.example.OTP.Entrance.Backend.Repositories.UserRepository;
 import com.example.OTP.Entrance.Backend.Services.OtpService;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -36,6 +37,7 @@ public class UserController {
                                 "role", user.getRole(),
                                 "name", user.getName(),
                                 "regNumber", user.getRegNumber(),
+                                "idNumber", user.getIdNumber(),
                                 "qrCode", qrCodeBase64
                         ));
                     } else {
@@ -50,4 +52,37 @@ public class UserController {
                         "message", "User not found"
                 )));
     }
+
+    @PutMapping("/updateRegNumber")
+    public ResponseEntity<?> updateRegNumber(@RequestBody Map<String, String> request) {
+        Long idNumber = Long.valueOf(request.get("idNumber"));
+        String newRegNumber = request.get("regNumber");
+
+        return userRepository.findByIdNumber(idNumber)
+                .map(user -> {
+                    user.setRegNumber(newRegNumber);
+                    userRepository.save(user);
+
+                    return ResponseEntity.ok(Map.of(
+                            "success", true,
+                            "message", "Registration number updated successfully",
+                            "regNumber", user.getRegNumber()
+                    ));
+                })
+                .orElse(ResponseEntity.badRequest().body(Map.of(
+                        "success", false,
+                        "message", "User not found"
+                )));
+    }
+
+    @PostMapping("/logout")
+    public ResponseEntity<?> logout(HttpServletRequest request) {
+        request.getSession().invalidate();  // clears session
+        return ResponseEntity.ok(Map.of(
+                "success", true,
+                "message", "Logout successful"
+        ));
+    }
+
+
 }
