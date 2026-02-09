@@ -9,6 +9,8 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@Getter
+@Setter
 public class User {
 
     @Id
@@ -26,4 +28,8 @@ public class User {
 
     @Column(nullable = false)
     private String role;
+
+    @Column(name = "otp_secret")
+    private String otpSecret;
+
 }
