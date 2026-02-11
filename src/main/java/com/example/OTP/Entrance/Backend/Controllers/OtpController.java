@@ -35,6 +35,19 @@ public class OtpController {
         ));
     }
 
+    @PostMapping("/scan-verify")
+    public ResponseEntity<Map<String, Object>> scanAndVerify(@RequestBody Map<String, String> body) {
+        String regNumber = body.get("regNumber");
+
+        boolean isValid = otpService.verifyQr(regNumber);
+
+        return ResponseEntity.ok(Map.of(
+                "success", isValid,
+                "message", isValid ? "User verified successfully" : "Verification failed"
+        ));
+    }
+
+
 
 }
 

@@ -80,4 +80,9 @@ public class OtpService {
             throw new RuntimeException("Failed to generate QR Code", e);
         }
     }
+
+    public boolean verifyQr(String regNumber) {
+        return userRepository.existsByRegNumber(regNumber);
+    }
+
 }
